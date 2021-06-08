@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/tetsu/steven-grider-ethereum/issues"
   },
-  "homepage": "https://github.com/tetsu/steven-grider-ethereum#readme"
+  "homepage": "https://github.com/tetsu/steven-grider-ethereum#readme",
+  "dependencies": {
+    "solc": "^0.4.17"
+  }
 }
