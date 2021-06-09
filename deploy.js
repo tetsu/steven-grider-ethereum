@@ -1,8 +1,8 @@
 const HDWalletProvider = require('truffle-hdwallet-provider');
 const Web3 = require('web3');
-const { interface, bytecode } = require('../compile');
+const { interface, bytecode } = require('./compile');
 
-const provier = new HDWalletProvider(
+const provider = new HDWalletProvider(
   'rhythm improve scissors announce hub that edit toy orange mango volume join',
   'https://rinkeby.infura.io/v3/c96e937a730d46d59f7fcc3dc638aa8a'
 );
