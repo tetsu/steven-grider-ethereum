@@ -1,4 +1,6 @@
-pragma solidity ^0.8.5;
+// SPDX-License-Identifier: UNLICENSED
+
+pragma solidity ^0.8.4;
 
 // Use OpenZeppelin as NFT framework
 // import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.4.0/contracts/token/ERC721/ERC721Full.sol";
@@ -26,7 +28,8 @@ contract GesrecContentNFT is ERC721 {
     }
 
     struct ContentToken {
-        Shareholder[] shareholders;
+        //Shareholder[] shareholders;
+        mapping(address => Shareholder) shareholders;
         Content content;
     }
 
@@ -34,33 +37,38 @@ contract GesrecContentNFT is ERC721 {
     ContentToken[] public tokens;
 
     //STORAGE for originators with address as key
-    mapping(address => Shareholder) public originators;
+    // mapping(address => Shareholder) public originators;
 
     //STORATGE for content information
-    Content public content;
+    // Content public content;
 
-    //Current owner of this token
-    Address public currentOwner;
+    //STORAGE for the current owner of this token
+    address public currentOwner;
+
+    //STORAGE for New Token
+    ContentToken public newToken;
 
     //Constructor
-    constructor(ShareholderArg[] _shareholders, Content _content)
-        public
-        ERC721Full("GesrecContentNFT", "Content NFT for GESREC service")
+    constructor(ShareholderArg[] memory _shareholders, Content memory _content)
+        ERC721("GesrecContentNFT", "Content NFT for GESREC service")
     {
         // Require share total to be 100% when distributing
         uint32 shareTotal = 0;
         bool hasServiceProvider = false;
+        // ContentToken memory newToken;
 
         //add rest of shareholders by converting struct array to mapping
         for (uint256 i = 0; i < _shareholders.length; i++) {
-            originators[_shareholders[i].id] = Shareholder(
+            // originators[_shareholders[i].id] = Shareholder(_shareholders[i].share_millipercent, _shareholders[i].role);
+            newToken.shareholders[_shareholders[i].id] = Shareholder(
                 _shareholders[i].share_millipercent,
                 _shareholders[i].role
             );
-            shareTotlal += _shareholders[i].share_millipercent;
+            shareTotal += _shareholders[i].share_millipercent;
             if (
-                originators[_shareholders[i].id] == msg.sender &&
-                originators[_shareholders[i]].role == Role.ServiceProvider
+                _shareholders[i].id == msg.sender &&
+                newToken.shareholders[_shareholders[i].id].role ==
+                Roles.ServiceProvider
             ) {
                 hasServiceProvider = true;
             }
@@ -68,20 +76,20 @@ contract GesrecContentNFT is ERC721 {
 
         // Require one service provider. Most of cases GESREC is the one.
         require(hasServiceProvider);
+
         // Require provider and creator's share total to be exact 50%
         // Use this service to calculate share_millipercent: https://www.convertunits.com/from/millipercent/to/percent
         // require(shareTotal == 50000);
 
         //add content information
-        content = _content;
-
-        //Initiate Non-Fungible Token
+        newToken.content = _content;
     }
 
     //publish token with mint function
     function mint() external {
         // uint256 id = tokens.push(Token('name','description')) - 1;
-        uint256 id = tokens.push(ContentToken(shareholders, content)) - 1;
+        // tokens.push(newToken);
+        uint256 id = tokens.length - 1;
         super._mint(msg.sender, id);
     }
 }
