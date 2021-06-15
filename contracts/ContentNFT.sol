@@ -17,7 +17,7 @@ contract GesrecContentNFT is ERC721 {
     struct Content {
         string contentType;
         string title;
-        string url;
+        string uri;
         string gesrecContentId;
     }
 
